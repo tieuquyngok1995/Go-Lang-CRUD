@@ -1,0 +1,7 @@
+CREATE TABLE users (
+    id         BIGINT IDENTITY(1,1) PRIMARY KEY,
+    name       NVARCHAR(100)  NOT NULL,
+    email      NVARCHAR(255)  NOT NULL UNIQUE,
+    password   NVARCHAR(255)  NOT NULL,
+    created_at DATETIME2      NOT NULL DEFAULT GETDATE()
+);
