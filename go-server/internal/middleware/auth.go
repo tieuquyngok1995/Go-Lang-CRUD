@@ -63,8 +63,8 @@ func Auth() gin.HandlerFunc {
 			return
 		}
 
-		c.Set("userID", claims.UserID)
-		c.Set("email", claims.Email)
+		c.Set(ContextUserID, claims.UserID)
+		c.Set(ContextEmail, claims.Email)
 		c.Next()
 	}
 }
@@ -72,8 +72,8 @@ func Auth() gin.HandlerFunc {
 func OptionalAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if claims, err := extractClaims(c); err == nil {
-			c.Set("user_id", claims.UserID)
-			c.Set("email", claims.Email)
+			c.Set(ContextUserID, claims.UserID)
+			c.Set(ContextEmail, claims.Email)
 		}
 		c.Next()
 	}
@@ -94,7 +94,7 @@ func extractClaims(c *gin.Context) (*Claims, error) {
 }
 
 func GetUserID(c *gin.Context) (int64, bool) {
-	val, exists := c.Get("user_id")
+	val, exists := c.Get(ContextUserID)
 	if !exists {
 		return 0, false
 	}
