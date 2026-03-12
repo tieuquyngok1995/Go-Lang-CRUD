@@ -36,6 +36,7 @@ func main() {
 	// Middleware logger + recovery
 	r.Use(middleware.Logger())
 	r.Use(gin.Recovery())
+	r.Use(middleware.CORS())
 
 	// Setup routes
 	router.SetupUserRoutes(r, db)

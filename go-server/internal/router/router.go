@@ -2,6 +2,7 @@ package router
 
 import (
 	"go-crud/internal/domain/auth"
+	"go-crud/internal/domain/product"
 	"go-crud/internal/domain/user"
 
 	"github.com/gin-gonic/gin"
@@ -22,6 +23,12 @@ func SetupUserRoutes(r *gin.Engine, db *sqlx.DB) *gin.Engine {
 	userSvc := user.NewService(userRepo)
 	userHandler := user.NewHandler(userSvc)
 	userHandler.RegisterRoutes(api)
+
+	// Product domain
+	productRepo := product.NewRepository(db)
+	productSvc := product.NewService(productRepo)
+	productHandler := product.NewHandler(productSvc)
+	productHandler.RegisterRoutes(api)
 
 	return r
 }

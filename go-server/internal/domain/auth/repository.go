@@ -8,6 +8,7 @@ import (
 
 type Repository interface {
 	FindUserByEmail(ctx context.Context, email string) (*UserRow, error)
+	FindUserByID(ctx context.Context, id int64) (*UserRow, error)
 	SaveSession(ctx context.Context, session *Session) error
 	FindSession(ctx context.Context, token string) (*Session, error)
 	DeleteSession(ctx context.Context, token string) error
@@ -35,6 +36,16 @@ func (r *repository) FindUserByEmail(ctx context.Context, email string) (*UserRo
 	var u UserRow
 	query := `SELECT id, name, email, password FROM users WHERE email = @p1`
 	if err := r.db.GetContext(ctx, &u, query, email); err != nil {
+		return nil, err
+	}
+	return &u, nil
+}
+
+// FindUserByID retrieves a user from the database by their ID.
+func (r *repository) FindUserByID(ctx context.Context, id int64) (*UserRow, error) {
+	var u UserRow
+	query := `SELECT id, name, email, password FROM users WHERE id = @p1`
+	if err := r.db.GetContext(ctx, &u, query, id); err != nil {
 		return nil, err
 	}
 	return &u, nil

@@ -15,6 +15,7 @@ type Service interface {
 	Logout(ctx context.Context, token string) error
 	LogoutAll(ctx context.Context, userID int64) error
 	ValidateToken(ctx context.Context, token string) (*Session, error)
+	GetMe(ctx context.Context, userID int64) (*UserInfo, error)
 }
 
 type service struct {
@@ -93,6 +94,14 @@ func (s *service) LogoutAll(ctx context.Context, userID int64) error {
 
 func (s *service) ValidateToken(ctx context.Context, token string) (*Session, error) {
 	return s.repo.FindSession(ctx, token)
+}
+
+func (s *service) GetMe(ctx context.Context, userID int64) (*UserInfo, error) {
+	u, err := s.repo.FindUserByID(ctx, userID)
+	if err != nil {
+		return nil, errors.New("user not found")
+	}
+	return &UserInfo{ID: u.ID, Name: u.Name, Email: u.Email}, nil
 }
 
 func extractRawToken(authHeader string) string {

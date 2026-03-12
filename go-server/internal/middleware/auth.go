@@ -80,9 +80,15 @@ func OptionalAuth() gin.HandlerFunc {
 }
 
 func extractClaims(c *gin.Context) (*Claims, error) {
+	// 1. Try httpOnly cookie first
+	if tokenStr, err := c.Cookie("token"); err == nil && tokenStr != "" {
+		return parseToken(tokenStr)
+	}
+
+	// 2. Fallback to Authorization header (API clients, mobile, etc.)
 	authHeader := c.GetHeader("Authorization")
 	if authHeader == "" {
-		return nil, errors.New("authorization header is required")
+		return nil, errors.New("authorization required")
 	}
 
 	parts := strings.SplitN(authHeader, " ", 2)
